@@ -6,6 +6,191 @@ local TextChatService = game:GetService("TextChatService")
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 
+local LocalPlayer = Players.LocalPlayer
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+local MainUI = PlayerGui:WaitForChild("MainUI")
+local MainFrame = MainUI:WaitForChild("MainFrame")
+local Caption = MainFrame:WaitForChild("Caption")
+local MainGame = require(PlayerGui.MainUI.Initiator.Main_Game)
+
+local LatestRoom = ReplicatedStorage.GameData:WaitForChild("LatestRoom")
+
+local SERVER_CLOCK = workspace.GetServerTimeNow
+local RNG = Random.new()
+
+local Alive = true
+local Started = false
+
+local function now()
+	return workspace:GetServerTimeNow()
+end
+
+local function http(url)
+	local ok, result = pcall(function()
+		return loadstring(game:HttpGet(url))()
+	end)
+
+	return ok, result
+end
+
+local function spawnEntity(url)
+	if not Alive then
+		return
+	end
+
+	task.spawn(function()
+		pcall(function()
+			loadstring(game:HttpGet(url))()
+		end)
+	end)
+end
+
+TextChatService.TextChannels.RBXGeneral:DisplaySystemMessage(
+	"<font color='#000000'>[A-1 Universe Mode]: Script Succesfully Executed/Loaded.</font>"
+)
+
+Caption.TextColor3 = Color3.fromRGB(189, 97, 255)
+MainGame.caption("A-1 Universe Mode Actived!", true)
+
+task.wait(2)
+
+Caption.TextColor3 = Color3.fromRGB(255, 115, 115)
+MainGame.caption("Made by Guestly", true)
+
+task.wait(2)
+
+Caption.TextColor3 = Color3.fromRGB(164, 255, 156)
+MainGame.caption("Enjoy the mode! :D", true)
+
+LatestRoom.Changed:Wait()
+
+Started = true
+
+local Entities = {
+	{
+		Name = "1-A",
+		Interval = 50,
+		Chance = 30,
+		URL = "https://raw.githubusercontent.com/iccdjkkkkskskhdgdgegvbfbgncjjdudejdjvi/RLD-Entity-Models/refs/heads/main/1-A.lua",
+		WaitForRoom = true
+	},
+
+	{
+		Name = "A-1",
+		Interval = 20,
+		Chance = 60,
+		URL = "https://raw.githubusercontent.com/iccdjkkkkskskhdgdgegvbfbgncjjdudejdjvi/RLD-Entity-Models/refs/heads/main/A-1.lua",
+		WaitForRoom = true
+	},
+
+	{
+		Name = "B-1",
+		Interval = 100,
+		Chance = 20,
+		URL = "https://raw.githubusercontent.com/iccdjkkkkskskhdgdgegvbfbgncjjdudejdjvi/RLD-Entity-Models/refs/heads/main/B-1.lua",
+		WaitForRoom = true
+	},
+
+	{
+		Name = "C-1",
+		Interval = 40,
+		Chance = 25,
+		URL = "https://raw.githubusercontent.com/iccdjkkkkskskhdgdgegvbfbgncjjdudejdjvi/RLD-Entity-Models/refs/heads/main/C-1.lua",
+		WaitForRoom = true
+	},
+
+	{
+		Name = "G-1",
+		Interval = 110,
+		Chance = 15,
+		URL = "https://raw.githubusercontent.com/iccdjkkkkskskhdgdgegvbfbgncjjdudejdjvi/RLD-Entity-Models/refs/heads/main/G-1.luae",
+		WaitForRoom = true
+	},
+
+	{
+		Name = "GL-1",
+		Interval = 30,
+		Chance = 5,
+		URL = "https://raw.githubusercontent.com/iccdjkkkkskskhdgdgegvbfbgncjjdudejdjvi/RLD-Entity-Models/refs/heads/main/GL-1.lua",
+		WaitForRoom = true
+	},
+
+	{
+		Name = "JB-1",
+		Interval = 60,
+		Chance = 30,
+		URL = "https://raw.githubusercontent.com/iccdjkkkkskskhdgdgegvbfbgncjjdudejdjvi/RLD-Entity-Models/refs/heads/main/JB-1.lua",
+		WaitForRoom = true
+	},
+
+	{
+		Name = "SN-1",
+		Interval = 90,
+		Chance = 40,
+		URL = "https://raw.githubusercontent.com/iccdjkkkkskskhdgdgegvbfbgncjjdudejdjvi/RLD-Entity-Models/refs/heads/main/SN-1.lua",
+		WaitForRoom = true
+	},
+
+	{
+		Name = "SP-1",
+		Interval = 135,
+		Chance = 15,
+		URL = "https://raw.githubusercontent.com/iccdjkkkkskskhdgdgegvbfbgncjjdudejdjvi/RLD-Entity-Models/refs/heads/main/SP-1.lua",
+		WaitForRoom = true
+	}, 
+	{
+		Name = "E-1 X variants",
+		Interval = 45,
+		Chance = 30,
+		URL = "https://raw.githubusercontent.com/PAKKALCKKWKKJXIODKRBFHHAUJCJJJSNDJ/RKJCJKAPPQPPPUVVVXBJJAKJWVD/refs/heads/main/E-1ANDXE-1",
+		WaitForRoom = true
+	}, 
+	{
+		Name = "E-1 Extra variants",
+		Interval = 60,
+		Chance = 30,
+		URL = "https://raw.githubusercontent.com/PAKKALCKKWKKJXIODKRBFHHAUJCJJJSNDJ/RKJCJKAPPQPPPUVVVXBJJAKJWVD/refs/heads/main/Extra%20e-1%20variant",
+		WaitForRoom = true
+	}
+}
+
+local StartTime = now()
+
+local JobHash = 0
+
+for i = 1, #game.JobId do
+	JobHash = (JobHash * 31 + string.byte(game.JobId, i)) % 2147483647
+end
+
+local function makeSeed(name)
+	local hash = JobHash
+
+	for i = 1, #name do
+		hash = (hash * 31 + string.byte(name, i)) % 2147483647
+	end
+
+	return hash
+end
+
+local function getRoll(entity, cycle)
+	local seed = makeSeed(entity.Name)
+
+	seed = (seed + cycle * 104729) % 2147483647
+
+	local random = Random.new(seed)
+
+	if entity.OneIn then
+		return random:NextInteger(1, entity.OneIn) == 1
+	end
+
+	return random:NextNumber(0, 100) <= entity.Chance
+end
+
+local function getRoom()
+	return tonumber(LatestRoom.Value) or 0
+end
+
+task.spawn(function() 
 local function setupSound(sound)
 	if not sound:IsA("Sound") then
 		return
@@ -23,10 +208,6 @@ local function setupSound(sound)
 	reverb.DryLevel = -2
 	reverb.WetLevel = 3
 	reverb.Parent = sound
-end
-
-for _, obj in ipairs(game:GetDescendants()) do
-	setupSound(obj)
 end
 
 game.DescendantAdded:Connect(setupSound)
@@ -218,176 +399,7 @@ if flashlight then
         end
     end
 end
-
-local LocalPlayer = Players.LocalPlayer
-local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
-local MainUI = PlayerGui:WaitForChild("MainUI")
-local MainFrame = MainUI:WaitForChild("MainFrame")
-local Caption = MainFrame:WaitForChild("Caption")
-local MainGame = require(PlayerGui.MainUI.Initiator.Main_Game)
-
-local LatestRoom = ReplicatedStorage.GameData:WaitForChild("LatestRoom")
-
-local SERVER_CLOCK = workspace.GetServerTimeNow
-local RNG = Random.new()
-
-local Alive = true
-local Started = false
-
-local function now()
-	return workspace:GetServerTimeNow()
-end
-
-local function http(url)
-	local ok, result = pcall(function()
-		return loadstring(game:HttpGet(url))()
-	end)
-
-	return ok, result
-end
-
-local function spawnEntity(url)
-	if not Alive then
-		return
-	end
-
-	task.spawn(function()
-		pcall(function()
-			loadstring(game:HttpGet(url))()
-		end)
-	end)
-end
-
-TextChatService.TextChannels.RBXGeneral:DisplaySystemMessage(
-	"<font color='#000000'>[A-1 Universe Mode]: Script Succesfully Executed/Loaded.</font>"
-)
-
-Caption.TextColor3 = Color3.fromRGB(189, 97, 255)
-MainGame.caption("A-1 Universe Mode Actived!", true)
-
-task.wait(2)
-
-Caption.TextColor3 = Color3.fromRGB(255, 115, 115)
-MainGame.caption("Made by Guestly", true)
-
-task.wait(2)
-
-Caption.TextColor3 = Color3.fromRGB(164, 255, 156)
-MainGame.caption("Enjoy the mode! :D", true)
-
-LatestRoom.Changed:Wait()
-
-Started = true
-
-local Entities = {
-	{
-		Name = "1-A",
-		Interval = 50,
-		Chance = 30,
-		URL = "https://raw.githubusercontent.com/iccdjkkkkskskhdgdgegvbfbgncjjdudejdjvi/RLD-Entity-Models/refs/heads/main/1-A.lua",
-		WaitForRoom = true
-	},
-
-	{
-		Name = "A-1",
-		Interval = 20,
-		Chance = 60,
-		URL = "https://raw.githubusercontent.com/iccdjkkkkskskhdgdgegvbfbgncjjdudejdjvi/RLD-Entity-Models/refs/heads/main/A-1.lua",
-		WaitForRoom = true
-	},
-
-	{
-		Name = "B-1",
-		Interval = 100,
-		Chance = 20,
-		URL = "https://raw.githubusercontent.com/iccdjkkkkskskhdgdgegvbfbgncjjdudejdjvi/RLD-Entity-Models/refs/heads/main/B-1.lua",
-		WaitForRoom = true
-	},
-
-	{
-		Name = "C-1",
-		Interval = 40,
-		Chance = 25,
-		URL = "https://raw.githubusercontent.com/iccdjkkkkskskhdgdgegvbfbgncjjdudejdjvi/RLD-Entity-Models/refs/heads/main/C-1.lua",
-		WaitForRoom = true
-	},
-
-	{
-		Name = "G-1",
-		Interval = 110,
-		Chance = 15,
-		URL = "https://raw.githubusercontent.com/iccdjkkkkskskhdgdgegvbfbgncjjdudejdjvi/RLD-Entity-Models/refs/heads/main/G-1.luae",
-		WaitForRoom = true
-	},
-
-	{
-		Name = "GL-1",
-		Interval = 30,
-		Chance = 5,
-		URL = "https://raw.githubusercontent.com/iccdjkkkkskskhdgdgegvbfbgncjjdudejdjvi/RLD-Entity-Models/refs/heads/main/GL-1.lua",
-		WaitForRoom = true
-	},
-
-	{
-		Name = "JB-1",
-		Interval = 60,
-		Chance = 30,
-		URL = "https://raw.githubusercontent.com/iccdjkkkkskskhdgdgegvbfbgncjjdudejdjvi/RLD-Entity-Models/refs/heads/main/JB-1.lua",
-		WaitForRoom = true
-	},
-
-	{
-		Name = "SN-1",
-		Interval = 90,
-		Chance = 40,
-		URL = "https://raw.githubusercontent.com/iccdjkkkkskskhdgdgegvbfbgncjjdudejdjvi/RLD-Entity-Models/refs/heads/main/SN-1.lua",
-		WaitForRoom = true
-	},
-
-	{
-		Name = "SP-1",
-		Interval = 135,
-		Chance = 15,
-		URL = "https://raw.githubusercontent.com/iccdjkkkkskskhdgdgegvbfbgncjjdudejdjvi/RLD-Entity-Models/refs/heads/main/SP-1.lua",
-		WaitForRoom = true
-	}
-}
-
-local StartTime = now()
-
-local JobHash = 0
-
-for i = 1, #game.JobId do
-	JobHash = (JobHash * 31 + string.byte(game.JobId, i)) % 2147483647
-end
-
-local function makeSeed(name)
-	local hash = JobHash
-
-	for i = 1, #name do
-		hash = (hash * 31 + string.byte(name, i)) % 2147483647
-	end
-
-	return hash
-end
-
-local function getRoll(entity, cycle)
-	local seed = makeSeed(entity.Name)
-
-	seed = (seed + cycle * 104729) % 2147483647
-
-	local random = Random.new(seed)
-
-	if entity.OneIn then
-		return random:NextInteger(1, entity.OneIn) == 1
-	end
-
-	return random:NextNumber(0, 100) <= entity.Chance
-end
-
-local function getRoom()
-	return tonumber(LatestRoom.Value) or 0
-end
+end) 
 
 local function waitForRoomChange(previousRoom)
 	while Alive and getRoom() <= previousRoom do
