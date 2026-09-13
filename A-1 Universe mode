@@ -134,8 +134,15 @@ local Entities = {
 	{
 		Name = "SP-1",
 		Interval = 135,
-		Chance = 15,
+		Chance = 50,
 		URL = "https://raw.githubusercontent.com/iccdjkkkkskskhdgdgegvbfbgncjjdudejdjvi/RLD-Entity-Models/refs/heads/main/SP-1.lua",
+		WaitForRoom = true
+	}, 
+	{
+		Name = "SP1XOMBINATION",
+		Interval = 30,
+		Chance = 1,
+		URL = "https://raw.githubusercontent.com/PAKKALCKKWKKJXIODKRBFHHAUJCJJJSNDJ/RKJCJKAPPQPPPUVVVXBJJAKJWVD/refs/heads/main/SP-1COMBINATION",
 		WaitForRoom = true
 	}, 
 	{
