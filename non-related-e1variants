@@ -1,0 +1,11 @@
+local r = math.random(1, 100)
+
+if r > 50 then
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/PAKKALCKKWKKJXIODKRBFHHAUJCJJJSNDJ/RKJCJKAPPQPPPUVVVXBJJAKJWVD/refs/heads/main/Stupid-1.lua"))() 
+elseif r < 50 then
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/PAKKALCKKWKKJXIODKRBFHHAUJCJJJSNDJ/RKJCJKAPPQPPPUVVVXBJJAKJWVD/refs/heads/main/BIGGE-1.lua"))() 
+	elseif r < 30 then
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/PAKKALCKKWKKJXIODKRBFHHAUJCJJJSNDJ/RKJCJKAPPQPPPUVVVXBJJAKJWVD/refs/heads/main/PlEading-1.lua"))() 
+	elseif r < 15 then
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/PAKKALCKKWKKJXIODKRBFHHAUJCJJJSNDJ/RKJCJKAPPQPPPUVVVXBJJAKJWVD/refs/heads/main/DRILL-1.lua"))() 
+end
